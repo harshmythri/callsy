@@ -1,0 +1,7 @@
+{
+  "name": "Callsy - Business Communication Infrastructure",
+  "description": "Callsy provides professional ID-based internet calling for local businesses, ensuring you never miss a customer inquiry from Google Search.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
