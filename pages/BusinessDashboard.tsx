@@ -153,10 +153,10 @@ const BusinessDashboard: React.FC = () => {
           <p className="text-sm text-slate-500 mb-8 leading-relaxed max-w-xl">Direct this link to your Google Maps 'Website' or 'Call' button for frictionless internet calling.</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-grow flex items-center bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
-              <span className="text-slate-400 text-xs font-medium mr-1 select-none">callsy.in/#/call/</span>
+              <span className="text-slate-400 text-xs font-medium mr-1 select-none">callsy.in/call/</span>
               <span className="text-blue-700 font-bold text-sm font-mono">{businessId}</span>
             </div>
-            <button onClick={() => navigator.clipboard.writeText(`https://callsy.in/#/call/${businessId}`)} className="px-8 py-3 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 shadow-lg">Copy Link</button>
+            <button onClick={() => navigator.clipboard.writeText(`https://callsy.in/call/${businessId}`)} className="px-8 py-3 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 shadow-lg">Copy Link</button>
           </div>
         </div>
         <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
@@ -165,59 +165,6 @@ const BusinessDashboard: React.FC = () => {
             <div className="flex justify-between items-end"><span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Successful Connections</span><span className="text-3xl font-bold text-slate-900">142</span></div>
             <div className="flex justify-between items-end"><span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Missed Inquiries</span><span className="text-3xl font-bold text-red-600">3</span></div>
           </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-900 mb-2">Automated Availability</h2>
-          <p className="text-xs text-slate-400 mb-8">Infrastructure auto-rejects calls outside these windows.</p>
-          <div className="space-y-2">
-            {hours.map((slot, i) => (
-              <div key={i} className="flex justify-between items-center py-4 px-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <div className="flex items-center gap-3">
-                  <button onClick={() => toggleDay(i)} className={`w-4 h-4 rounded border ${slot.enabled ? 'bg-blue-600 border-blue-600' : 'bg-white border-slate-300'}`}>
-                    {slot.enabled && <svg className="w-3 h-3 text-white mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>}
-                  </button>
-                  <span className={`text-sm font-bold ${slot.enabled ? 'text-slate-900' : 'text-slate-400'}`}>{slot.day}</span>
-                </div>
-                {slot.enabled ? (
-                  <div className="flex gap-2 items-center">
-                    <input type="time" defaultValue={slot.start} className="bg-white border border-slate-200 rounded px-2 py-1 text-xs font-mono font-bold" />
-                    <span className="text-slate-300 text-xs">to</span>
-                    <input type="time" defaultValue={slot.end} className="bg-white border border-slate-200 rounded px-2 py-1 text-xs font-mono font-bold" />
-                  </div>
-                ) : (
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Infrastructure Offline</span>
-                )}
-              </div>
-            ))}
-          </div>
-          <button className="w-full mt-6 py-3 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors">Update Schedule</button>
-        </div>
-        <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
-          <h2 className="text-lg font-bold text-slate-900 mb-8">Recent Call Logs</h2>
-          <div className="space-y-3">
-            {[
-              { id: '1', type: 'Incoming', time: '12m ago', duration: '2m 14s', status: 'COMPLETED' },
-              { id: '2', type: 'Incoming', time: '1h ago', duration: '1m 05s', status: 'COMPLETED' },
-              { id: '3', type: 'Missed', time: '4h ago', duration: '--', status: 'MISSED' },
-            ].map((log) => (
-              <div key={log.id} className="flex justify-between items-center p-4 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100">
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${log.status === 'MISSED' ? 'bg-red-50' : 'bg-blue-50'}`}>
-                    <svg className={`w-5 h-5 ${log.status === 'MISSED' ? 'text-red-500' : 'text-blue-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-slate-900">{log.type} P2P Session</p>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{log.time}</p>
-                  </div>
-                </div>
-                <span className={`text-[10px] font-mono font-bold px-2 py-1 rounded-lg ${log.status === 'MISSED' ? 'bg-red-50 text-red-500' : 'bg-slate-100 text-slate-600'}`}>{log.duration}</span>
-              </div>
-            ))}
-          </div>
-          <button className="w-full mt-6 py-3 text-slate-400 text-[10px] font-bold uppercase tracking-widest hover:text-slate-600">View Full Audit Trail</button>
         </div>
       </div>
     </div>
