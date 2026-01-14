@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { CallSession, QualityMetrics } from '../services/webrtc';
 
@@ -9,19 +8,14 @@ const BusinessDashboard: React.FC = () => {
   const [callActive, setCallActive] = useState<boolean>(false);
   const [quality, setQuality] = useState<QualityMetrics['score']>('EXCELLENT');
   
-  // Working Hours State
-  const [hours, setHours] = useState([
-    { day: 'Mon - Fri', start: '09:00', end: '20:00', enabled: true },
-    { day: 'Saturday', start: '10:00', end: '16:00', enabled: true },
-    { day: 'Sunday', start: '00:00', end: '00:00', enabled: false },
-  ]);
+  const currentOrigin = window.location.origin;
+  const fullCallUrl = `${currentOrigin}/#/call/${businessId}`;
 
   const sessionRef = useRef<CallSession | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const statsIntervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Simulated presence listener
     const timer = setTimeout(() => {
       if (isOnline) setIncomingCall(true);
     }, 15000);
@@ -31,16 +25,6 @@ const BusinessDashboard: React.FC = () => {
       sessionRef.current?.close();
     };
   }, [isOnline]);
-
-  const startStatsPolling = () => {
-    if (statsIntervalRef.current) clearInterval(statsIntervalRef.current);
-    statsIntervalRef.current = window.setInterval(async () => {
-      if (sessionRef.current && callActive) {
-        const stats = await sessionRef.current.getQualityStats();
-        setQuality(stats.score);
-      }
-    }, 2000);
-  };
 
   const handleAcceptCall = async () => {
     setIncomingCall(false);
@@ -52,27 +36,16 @@ const BusinessDashboard: React.FC = () => {
       });
       sessionRef.current = session;
       await session.startLocalStream();
-      startStatsPolling();
     } catch (err) {
       alert("Microphone required to receive calls.");
       setCallActive(false);
     }
   };
 
-  const handleRejectCall = () => {
-    setIncomingCall(false);
-  };
-
   const handleEndCall = () => {
     if (statsIntervalRef.current) clearInterval(statsIntervalRef.current);
     sessionRef.current?.close();
     setCallActive(false);
-  };
-
-  const toggleDay = (index: number) => {
-    const newHours = [...hours];
-    newHours[index].enabled = !newHours[index].enabled;
-    setHours(newHours);
   };
 
   const getQualityColor = () => {
@@ -103,7 +76,7 @@ const BusinessDashboard: React.FC = () => {
             <h3 className="text-2xl font-bold text-slate-900 mb-1">Incoming Call</h3>
             <p className="text-slate-500 text-sm mb-10 font-medium">Customer inquiry via callsy.in/{businessId}</p>
             <div className="flex gap-4">
-              <button onClick={handleRejectCall} className="flex-1 py-4 bg-red-50 text-red-600 rounded-2xl font-bold hover:bg-red-100">Reject</button>
+              <button onClick={() => setIncomingCall(false)} className="flex-1 py-4 bg-red-50 text-red-600 rounded-2xl font-bold hover:bg-red-100">Reject</button>
               <button onClick={handleAcceptCall} className="flex-1 py-4 bg-blue-700 text-white rounded-2xl font-bold hover:bg-blue-800 shadow-xl active:scale-95">Accept</button>
             </div>
           </div>
@@ -153,10 +126,10 @@ const BusinessDashboard: React.FC = () => {
           <p className="text-sm text-slate-500 mb-8 leading-relaxed max-w-xl">Direct this link to your Google Maps 'Website' or 'Call' button for frictionless internet calling.</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-grow flex items-center bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
-              <span className="text-slate-400 text-xs font-medium mr-1 select-none">callsy.in/call/</span>
+              <span className="text-slate-400 text-xs font-medium mr-1 select-none">{currentOrigin.split('//')[1]}/#/call/</span>
               <span className="text-blue-700 font-bold text-sm font-mono">{businessId}</span>
             </div>
-            <button onClick={() => navigator.clipboard.writeText(`https://callsy.in/call/${businessId}`)} className="px-8 py-3 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 shadow-lg">Copy Link</button>
+            <button onClick={() => navigator.clipboard.writeText(fullCallUrl)} className="px-8 py-3 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 shadow-lg">Copy Link</button>
           </div>
         </div>
         <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
